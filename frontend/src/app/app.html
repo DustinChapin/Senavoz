@@ -20,18 +20,6 @@
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }
-    @if (canSetupVoice) {
-      <button type="button" class="link" (click)="toggleSetup()" [attr.aria-expanded]="showSetup()">
-        ⚙ Voz sin conexión
-      </button>
-      @if (showSetup()) {
-        <div class="setup">
-          <p>Para usar la app sin internet, descarga el español:</p>
-          <button type="button" (click)="setupOfflineSpeech()">1. Reconocer mi voz</button>
-          <button type="button" (click)="setupTts()">2. Leer mensajes en voz alta</button>
-        </div>
-      }
-    }
   </section>
 
   <!-- Mitad inferior: persona sorda -->
@@ -41,6 +29,10 @@
         {{ transcript() || 'Lo que diga la otra persona se mostrará aquí' }}
       </p>
     </div>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
 
     <form class="compose" (submit)="$event.preventDefault(); speakDraft()">
       <input type="text" class="compose-input" placeholder="Escribe aquí para que la app lo diga en voz alta"
@@ -59,5 +51,21 @@
         </button>
       }
     </div>
+    @if (canSetupVoice) {
+      <button type="button" class="link" (click)="toggleSetup()">⚙ Voz sin conexión</button>
+    }
   </section>
 </main>
+
+@if (showSetup()) {
+  <div class="sheet-backdrop" (click)="toggleSetup()">
+    <div class="sheet" role="dialog" aria-label="Voz sin conexión" (click)="$event.stopPropagation()">
+      <h2>Usar la app sin internet</h2>
+      <p>Descarga el español una sola vez, con internet. Después la voz funciona sin conexión.</p>
+      <button type="button" (click)="setupOfflineSpeech()">1. Reconocer la voz de quien habla</button>
+      <button type="button" (click)="setupTts()">2. Leer tus mensajes en voz alta</button>
+      <p class="hint">En cada pantalla elige <b>Español</b> y toca <b>Descargar</b>.</p>
+      <button type="button" class="close" (click)="toggleSetup()">Cerrar</button>
+    </div>
+  </div>
+}

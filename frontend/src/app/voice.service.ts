@@ -79,9 +79,22 @@ export class VoiceService {
       }),
     );
 
-    await SpeechRecognition.start({ language: LANG, partialResults: true, popup: false, maxResults: 1 }).catch(
-      (e) => isActive() && subscriber.error(e),
+    // Errores que el plugin avisa después de empezar (parche en patches/): red, sin voz, etc.
+    handles.push(
+      await (SpeechRecognition as any).addListener('error', (e: { message: string }) => {
+        if (isActive()) subscriber.error(new Error(e.message));
+      }),
     );
+
+    // Sin internet se pide expresamente el reconocimiento en el dispositivo (paquete descargado).
+    const options = {
+      language: LANG,
+      partialResults: true,
+      popup: false,
+      maxResults: 1,
+      preferOffline: !navigator.onLine,
+    };
+    await SpeechRecognition.start(options as any).catch((e) => isActive() && subscriber.error(e));
     return () => {
       handles.forEach((h) => h.remove());
       SpeechRecognition.stop().catch(() => {});

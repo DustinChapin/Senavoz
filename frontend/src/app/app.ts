@@ -102,7 +102,9 @@ export class App implements OnInit, OnDestroy {
       next: (text) => this.transcript.set(text),
       // La persona dejó de hablar: el micrófono ya se apagó solo.
       complete: () => {
-        this.finished.set(!!this.transcript());
+        const heard = !!this.transcript();
+        this.finished.set(heard);
+        if (!heard) this.error.set(this.micError(new Error('no speech')));
         this.stop();
       },
       error: (e) => {
@@ -114,10 +116,15 @@ export class App implements OnInit, OnDestroy {
   }
 
   private micError(e: unknown): string {
-    const base = e instanceof Error && e.message ? e.message : 'No se pudo usar el micrófono.';
-    return navigator.onLine
-      ? base
-      : `${base} Sin internet, instala el español sin conexión: Ajustes › Google › Voz › Reconocimiento de voz sin conexión.`;
+    const raw = (e instanceof Error ? e.message : String(e ?? '')).toLowerCase();
+    if (raw.includes('no speech') || raw.includes('no match')) return 'No te escuché. Toca el botón e inténtalo de nuevo.';
+    if (raw.includes('permission')) return 'Falta el permiso del micrófono. Actívalo en los ajustes del teléfono.';
+    if (raw.includes('network') || raw.includes('server') || raw.includes('language')) {
+      return navigator.onLine
+        ? 'No se pudo reconocer la voz. Revisa tu conexión e inténtalo de nuevo.'
+        : 'Sin internet no se pudo reconocer la voz. La persona sorda puede descargar el español sin conexión en «Voz sin conexión».';
+    }
+    return 'No se pudo usar el micrófono. Inténtalo de nuevo.';
   }
 
   private stop(): void {

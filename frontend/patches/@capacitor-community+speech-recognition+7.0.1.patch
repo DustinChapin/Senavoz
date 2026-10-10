@@ -1,0 +1,43 @@
+diff --git a/node_modules/@capacitor-community/speech-recognition/android/src/main/java/com/getcapacitor/community/speechrecognition/SpeechRecognition.java b/node_modules/@capacitor-community/speech-recognition/android/src/main/java/com/getcapacitor/community/speechrecognition/SpeechRecognition.java
+index a99ea69..b50e021 100644
+--- a/node_modules/@capacitor-community/speech-recognition/android/src/main/java/com/getcapacitor/community/speechrecognition/SpeechRecognition.java
++++ b/node_modules/@capacitor-community/speech-recognition/android/src/main/java/com/getcapacitor/community/speechrecognition/SpeechRecognition.java
+@@ -39,6 +39,7 @@ public class SpeechRecognition extends Plugin implements Constants {
+ 
+     private final ReentrantLock lock = new ReentrantLock();
+     private boolean listening = false;
++    private boolean preferOffline = false;
+ 
+     private JSONArray previousPartialResults = new JSONArray();
+ 
+@@ -81,6 +82,7 @@ public class SpeechRecognition extends Plugin implements Constants {
+         String prompt = call.getString("prompt", null);
+         boolean partialResults = call.getBoolean("partialResults", false);
+         boolean popup = call.getBoolean("popup", false);
++        preferOffline = call.getBoolean("preferOffline", false);
+         beginListening(language, maxResults, prompt, partialResults, popup, call);
+     }
+ 
+@@ -168,6 +170,9 @@ public class SpeechRecognition extends Plugin implements Constants {
+         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, bridge.getActivity().getPackageName());
+         intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, partialResults);
+         intent.putExtra("android.speech.extra.DICTATION_MODE", partialResults);
++        if (preferOffline) {
++            intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
++        }
+ 
+         if (prompt != null) {
+             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, prompt);
+@@ -283,6 +288,12 @@ public class SpeechRecognition extends Plugin implements Constants {
+             SpeechRecognition.this.stopListening();
+             String errorMssg = getErrorText(error);
+ 
++            // La llamada start() ya se resolvió (partialResults), así que el error se avisa por evento.
++            JSObject errEvent = new JSObject();
++            errEvent.put("message", errorMssg);
++            errEvent.put("code", error);
++            SpeechRecognition.this.notifyListeners("error", errEvent);
++
+             if (this.call != null) {
+                 call.reject(errorMssg);
+             }
