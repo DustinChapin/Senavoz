@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from './api.service';
 import { QuickPhrase } from './models';
+import { SPLASH_MS } from './config';
 import { VoiceService } from './voice.service';
 
 const ICONS: Record<string, string> = {
@@ -29,6 +30,8 @@ export class App implements OnInit, OnDestroy {
   protected readonly phrases = signal<QuickPhrase[]>([]);
   protected readonly listening = signal(false);
   protected readonly transcript = signal('');
+  protected readonly splashVisible = signal(true);
+  protected readonly splashLeaving = signal(false);
   protected readonly finished = signal(false);
   protected readonly error = signal('');
   protected readonly speakingId = signal<string | null>(null);
@@ -36,6 +39,9 @@ export class App implements OnInit, OnDestroy {
   protected readonly speakingDraft = signal(false);
 
   ngOnInit(): void {
+    // Pantalla de entrada: se muestra un momento y se desvanece.
+    setTimeout(() => this.splashLeaving.set(true), SPLASH_MS);
+    setTimeout(() => this.splashVisible.set(false), SPLASH_MS + 450);
     this.api.phrases$().subscribe((phrases) => this.phrases.set(phrases));
   }
 

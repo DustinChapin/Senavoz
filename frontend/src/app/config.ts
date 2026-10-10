@@ -12,3 +12,6 @@ export const LANG = 'es-ES';
  * de Google que más teléfonos tienen disponible; con él funciona con y sin internet.
  */
 export const STT_LANG = 'es-US';
+
+/** Duración (ms) de la pantalla de entrada con el logo. */
+export const SPLASH_MS = 1900;
