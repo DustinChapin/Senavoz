@@ -3,7 +3,7 @@
  * Si se deja vacía, la app funciona 100% sin conexión con el diccionario integrado.
  * Ejemplo: 'https://senavoz-api.vercel.app'
  */
-export const API_URL = '';
+export const API_URL = 'https://senavoz-livid.vercel.app';
 
 /** Idioma de reconocimiento y síntesis de voz. */
 export const LANG = 'es-ES';

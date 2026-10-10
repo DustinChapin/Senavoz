@@ -5,9 +5,8 @@ const config: CapacitorConfig = {
   appName: 'SeñaVoz',
   webDir: 'dist/frontend/browser',
   server: {
-    // Permite llamar a una API http en desarrollo. Con una API https se puede dejar 'https' y quitar cleartext.
-    androidScheme: 'http',
-    cleartext: true,
+    // La API está en HTTPS (Vercel).
+    androidScheme: 'https',
   },
 };
 

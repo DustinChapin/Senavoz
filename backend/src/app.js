@@ -14,6 +14,7 @@ const wrap = (fn) => (req, res) =>
 
 const WORD_SQL = 'SELECT keyword, media_url, category FROM dictionary WHERE keyword = $1';
 
+app.get('/', (_req, res) => res.json({ name: 'SeñaVoz API', endpoints: ['/api/dictionary', '/api/phrases', '/api/health'] }));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // Sin parámetros devuelve el diccionario completo (la app lo cachea); con ?word= una sola palabra.
