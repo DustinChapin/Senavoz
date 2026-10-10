@@ -81,6 +81,10 @@ cd android
 ./gradlew assembleDebug   # APK en app/build/outputs/apk/debug/
 ```
 
+## Desarrollo con IA
+
+Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), usado como asistente de programación. La definición del proyecto, las pruebas en dispositivos reales y la publicación las realizó el autor.
+
 ## Licencia
 
 [MIT](LICENSE) © 2026 Dustin Chapin
