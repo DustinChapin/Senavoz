@@ -1,9 +1,3 @@
-export interface DictionaryEntry {
-  keyword: string;
-  media_url: string;
-  category: string | null;
-}
-
 export interface QuickPhrase {
   id: string;
   display_text: string;

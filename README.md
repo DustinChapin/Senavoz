@@ -1,17 +1,18 @@
 # SeñaVoz
 
-Aplicación Android de accesibilidad que facilita la conversación entre una persona **sorda** y una persona **oyente** usando una **pantalla dividida**:
+Aplicación Android de accesibilidad que facilita la conversación cara a cara entre una persona **sorda** y una persona **oyente** usando una **pantalla dividida**:
 
 - **Mitad superior (rotada 180°) – persona oyente:** toca el micrófono y habla. La app transcribe su voz en tiempo real.
-- **Mitad inferior – persona sorda:** ve el texto de lo que se dijo y, cuando detecta una palabra clave del diccionario (p. ej. *hospital*, *ayuda*, *por favor*), muestra la **seña** correspondiente. También dispone de **tarjetas de frases rápidas** que la app lee en voz alta (TTS).
+- **Mitad inferior – persona sorda:** lee en grande lo que dijo la otra persona y responde de dos formas:
+  - **Escribiendo** un mensaje que la app **lee en voz alta** (texto a voz).
+  - Tocando **tarjetas de frases rápidas** ("Necesito ayuda", "Necesito un médico", "¿Dónde está el baño?"…).
 
 ## Arquitectura
 
 ```
-Frontend (Angular 21 + Capacitor 8)  ⇄  API REST (Node.js + Express)  ⇄  PostgreSQL (Neon / local)
- · STT: speech-recognition                · GET /api/dictionary[?word=]            · dictionary
- · TTS: text-to-speech                    · GET /api/dictionary/:word              · quick_phrases
- · Motor reactivo con RxJS                · GET /api/phrases
+Frontend (Angular 21 + Capacitor 8)  ⇄  API REST (Node.js + Express)  ⇄  PostgreSQL (Neon)
+ · STT: speech-recognition                · GET /api/phrases                       · quick_phrases
+ · TTS: text-to-speech                    · GET /api/health
 ```
 
 | Capa | Tecnología |
@@ -19,22 +20,13 @@ Frontend (Angular 21 + Capacitor 8)  ⇄  API REST (Node.js + Express)  ⇄  Pos
 | UI | Angular 21 (standalone + signals), SCSS puro |
 | Nativo | Capacitor 8, Android 7+ (minSdk 24) |
 | Voz | `@capacitor-community/speech-recognition`, `@capacitor-community/text-to-speech` |
-| Reactividad | RxJS: `scan`, `mergeMap`, `concatMap` |
-| Backend | Node.js, Express, `pg` — listo para Vercel (`backend/api/index.js`) |
-| Datos | PostgreSQL (esquema en `backend/sql/`) |
-
-### Motor reactivo de señas
-
-`frontend/src/app/sign-engine.ts` convierte el flujo del micrófono en señas:
-
-1. Normaliza el texto (minúsculas, sin tildes ni puntuación).
-2. Evalúa solo las palabras **nuevas** de cada resultado parcial para no repetir señas.
-3. Reconoce expresiones de dos palabras (*por favor*) antes que palabras sueltas.
-4. Las señas detectadas hacen cola y se muestran unos segundos cada una.
+| Reactividad | RxJS (flujo continuo de voz a texto) |
+| Backend | Node.js, Express, `pg` — desplegado en Vercel (`backend/api/index.js`) |
+| Datos | PostgreSQL en Neon (esquema en `backend/sql/`) |
 
 ### Funciona sin conexión
 
-`ApiService` usa la estrategia **red → caché local → diccionario integrado**, así la app siempre tiene datos.
+`ApiService` usa la estrategia **red → caché local → frases integradas**, así la app siempre tiene tarjetas. La voz a texto y el texto a voz usan los servicios del teléfono.
 
 ## Instalar el APK
 
@@ -48,7 +40,7 @@ Descarga `entrega/SenaVoz.apk`, cópialo al teléfono y ábrelo (habilita “ins
 cd backend
 cp .env.example .env      # completa los datos de PostgreSQL (o DATABASE_URL de Neon)
 npm install
-npm run db:init           # crea tablas e inserta 10 palabras y 9 frases de ejemplo
+npm run db:init           # crea las tablas e inserta las frases de ejemplo
 npm run dev               # http://localhost:3000
 ```
 
@@ -62,7 +54,7 @@ npm install
 npm start                 # http://localhost:4200 (el micrófono funciona en Chrome)
 ```
 
-Para conectar la app a la API, edita `API_URL` en `frontend/src/app/config.ts`.
+Para conectar la app a tu API, edita `API_URL` en `frontend/src/app/config.ts` (vacío = modo sin conexión).
 
 ### Generar el APK
 
@@ -76,12 +68,8 @@ cd android
 ./gradlew assembleDebug   # APK en app/build/outputs/apk/debug/
 ```
 
-## Contenido de las señas
-
-Las imágenes del diccionario son **marcadores de posición**. Para usar señas reales, sube GIF/MP4 (p. ej. a Cloudinary) y actualiza `media_url` en la tabla `dictionary`.
-
 ## Hoja de ruta
 
-- Señas reales en video para un vocabulario más amplio.
-- Selector de idioma y frases personalizables por el usuario.
-- Panel de administración del diccionario.
+- Frases personalizables por el usuario.
+- Selector de idioma.
+- Historial de la conversación.

@@ -107,22 +107,6 @@ $muted: #8fa3bf;
   gap: 8px;
 }
 
-.sign {
-  flex: 1 1 0;
-  min-height: 0;
-  max-width: 100%;
-  object-fit: contain;
-  border-radius: 14px;
-  animation: pop 0.25s ease-out;
-}
-
-.sign-word {
-  font-size: 1.6rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
 .transcript {
   margin: 0;
   font-size: 1.5rem;
@@ -226,16 +210,8 @@ $muted: #8fa3bf;
   }
 }
 
-@keyframes pop {
-  from {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .mic.on,
-  .sign {
+  .mic.on {
     animation: none;
   }
 }

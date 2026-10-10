@@ -18,16 +18,9 @@
   <!-- Mitad inferior: persona sorda -->
   <section class="zone deaf" aria-label="Zona de la persona sorda">
     <div class="stage" aria-live="polite">
-      @if (sign(); as s) {
-        @if (!imageFailed()) {
-          <img class="sign" [src]="s.media_url" [alt]="'Seña: ' + s.keyword" (error)="imageFailed.set(true)" />
-        }
-        <span class="sign-word">{{ s.keyword }}</span>
-      } @else {
-        <p class="transcript" [class.empty]="!transcript()">
-          {{ transcript() || 'Lo que diga la otra persona se mostrará aquí' }}
-        </p>
-      }
+      <p class="transcript" [class.empty]="!transcript()">
+        {{ transcript() || 'Lo que diga la otra persona se mostrará aquí' }}
+      </p>
     </div>
 
     <form class="compose" (submit)="$event.preventDefault(); speakDraft()">

@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { Subscription, concat, concatMap, forkJoin, map, of, share, timer } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ApiService } from './api.service';
-import { SIGN_DISPLAY_MS } from './config';
-import { DictionaryEntry, QuickPhrase } from './models';
-import { signsFromSpeech } from './sign-engine';
+import { QuickPhrase } from './models';
 import { VoiceService } from './voice.service';
 
 const ICONS: Record<string, string> = {
@@ -28,22 +26,16 @@ export class App implements OnInit, OnDestroy {
   private readonly voice = inject(VoiceService);
   private listening$?: Subscription;
 
-  protected readonly dictionary = signal<DictionaryEntry[]>([]);
   protected readonly phrases = signal<QuickPhrase[]>([]);
   protected readonly listening = signal(false);
   protected readonly transcript = signal('');
-  protected readonly sign = signal<DictionaryEntry | null>(null);
-  protected readonly imageFailed = signal(false);
   protected readonly error = signal('');
   protected readonly speakingId = signal<string | null>(null);
   protected readonly draft = signal('');
   protected readonly speakingDraft = signal(false);
 
   ngOnInit(): void {
-    forkJoin({ dictionary: this.api.dictionary$(), phrases: this.api.phrases$() }).subscribe(({ dictionary, phrases }) => {
-      this.dictionary.set(dictionary);
-      this.phrases.set(phrases);
-    });
+    this.api.phrases$().subscribe((phrases) => this.phrases.set(phrases));
   }
 
   ngOnDestroy(): void {
@@ -89,26 +81,13 @@ export class App implements OnInit, OnDestroy {
   private start(): void {
     this.error.set('');
     this.transcript.set('');
-    const speech$ = this.voice.startListening().pipe(share());
-
-    const text = speech$.subscribe({
-      next: (t) => this.transcript.set(t),
-      error: (e) => this.fail(e),
+    this.listening$ = this.voice.startListening().subscribe({
+      next: (text) => this.transcript.set(text),
+      error: (e) => {
+        this.error.set(e instanceof Error ? e.message : 'No se pudo usar el micrófono.');
+        this.stop();
+      },
     });
-
-    // Cada seña detectada se muestra SIGN_DISPLAY_MS y luego se limpia; si llegan varias, hacen cola.
-    const signs = signsFromSpeech(speech$, this.dictionary())
-      .pipe(
-        concatMap((entry) => concat(of(entry), timer(SIGN_DISPLAY_MS).pipe(map(() => null)))),
-      )
-      .subscribe((entry) => {
-        this.imageFailed.set(false);
-        this.sign.set(entry);
-      });
-
-    this.listening$ = new Subscription();
-    this.listening$.add(text);
-    this.listening$.add(signs);
     this.listening.set(true);
   }
 
@@ -116,11 +95,5 @@ export class App implements OnInit, OnDestroy {
     this.listening$?.unsubscribe();
     this.listening$ = undefined;
     this.listening.set(false);
-    this.sign.set(null);
-  }
-
-  private fail(e: unknown): void {
-    this.error.set(e instanceof Error ? e.message : 'No se pudo usar el micrófono.');
-    this.stop();
   }
 }
