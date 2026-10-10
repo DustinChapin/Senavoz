@@ -1,0 +1,16 @@
+node_modules/
+.env
+.vercel/
+.claude/
+
+# Angular
+frontend/dist/
+frontend/.angular/
+
+# Android (se regenera con `npx cap sync android`)
+frontend/android/.gradle/
+frontend/android/build/
+frontend/android/app/build/
+frontend/android/local.properties
+frontend/android/app/src/main/assets/public/
+frontend/android/capacitor-cordova-android-plugins/

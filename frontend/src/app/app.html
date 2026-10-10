@@ -1,0 +1,42 @@
+<main class="split">
+  <!-- Mitad superior: persona oyente (rotada 180° para quedar de frente a ella) -->
+  <section class="zone hearing rotated" aria-label="Zona de la persona oyente">
+    <p class="role">Persona oyente</p>
+    <button type="button" class="mic" [class.on]="listening()" (click)="toggleListening()"
+      [attr.aria-pressed]="listening()">
+      <span class="mic-icon">{{ listening() ? '⏹' : '🎤' }}</span>
+      <span>{{ listening() ? 'Detener' : 'Toca y habla' }}</span>
+    </button>
+    <p class="heard" [class.empty]="!transcript()">
+      {{ transcript() || (listening() ? 'Escuchando…' : 'Tu voz aparecerá aquí') }}
+    </p>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </section>
+
+  <!-- Mitad inferior: persona sorda -->
+  <section class="zone deaf" aria-label="Zona de la persona sorda">
+    <div class="stage" aria-live="polite">
+      @if (sign(); as s) {
+        @if (!imageFailed()) {
+          <img class="sign" [src]="s.media_url" [alt]="'Seña: ' + s.keyword" (error)="imageFailed.set(true)" />
+        }
+        <span class="sign-word">{{ s.keyword }}</span>
+      } @else {
+        <p class="transcript" [class.empty]="!transcript()">
+          {{ transcript() || 'Lo que diga la otra persona se mostrará aquí' }}
+        </p>
+      }
+    </div>
+
+    <div class="cards">
+      @for (p of phrases(); track p.id) {
+        <button type="button" class="card" [class.speaking]="speakingId() === p.id" (click)="say(p)">
+          <span class="card-icon" aria-hidden="true">{{ icon(p.icon_name) }}</span>
+          <span class="card-text">{{ p.display_text }}</span>
+        </button>
+      }
+    </div>
+  </section>
+</main>

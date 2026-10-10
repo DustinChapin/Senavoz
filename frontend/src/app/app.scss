@@ -1,0 +1,196 @@
+$bg: #0b1220;
+$panel-hearing: #11203a;
+$panel-deaf: #0f172a;
+$accent: #38bdf8;
+$danger: #f87171;
+$text: #e5edf8;
+$muted: #8fa3bf;
+
+.split {
+  display: grid;
+  grid-template-rows: 50% 50%;
+  height: 100dvh;
+  overflow: hidden;
+  background: $bg;
+  color: $text;
+}
+
+.zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.rotated {
+  transform: rotate(180deg);
+}
+
+.hearing {
+  justify-content: center;
+  gap: 10px;
+  background: $panel-hearing;
+  border-bottom: 3px solid $accent;
+}
+
+.role {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $muted;
+}
+
+.mic {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 999px;
+  background: $accent;
+  color: #04202e;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &.on {
+    background: $danger;
+    color: #2b0606;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+}
+
+.mic-icon {
+  font-size: 1.5rem;
+}
+
+.heard {
+  margin: 0;
+  max-width: 100%;
+  font-size: 1.25rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  &.empty {
+    color: $muted;
+  }
+}
+
+.error {
+  margin: 0;
+  color: $danger;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.deaf {
+  gap: 10px;
+  background: $panel-deaf;
+}
+
+.stage {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sign {
+  flex: 1 1 0;
+  min-height: 0;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 14px;
+  animation: pop 0.25s ease-out;
+}
+
+.sign-word {
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.transcript {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+
+  &.empty {
+    font-size: 1rem;
+    color: $muted;
+  }
+}
+
+.cards {
+  flex: 0 0 auto;
+  width: 100%;
+  max-height: 55%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 64px;
+  padding: 8px 6px;
+  border: 1px solid #28405f;
+  border-radius: 12px;
+  background: #16263f;
+  color: $text;
+  font-size: 0.8rem;
+  line-height: 1.15;
+  cursor: pointer;
+
+  &.speaking {
+    border-color: $accent;
+    background: #1d3b5c;
+  }
+}
+
+.card-icon {
+  font-size: 1.4rem;
+}
+
+.card-text {
+  text-align: center;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mic.on,
+  .sign {
+    animation: none;
+  }
+}

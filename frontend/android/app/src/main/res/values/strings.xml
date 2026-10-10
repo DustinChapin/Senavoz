@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SeñaVoz</string>
+    <string name="title_activity_main">SeñaVoz</string>
+    <string name="package_name">ec.senavoz.app</string>
+    <string name="custom_url_scheme">ec.senavoz.app</string>
+</resources>
