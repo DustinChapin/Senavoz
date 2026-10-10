@@ -10,8 +10,8 @@ Aplicación Android de accesibilidad que facilita la conversación cara a cara e
 ## Capturas
 
 <p align="center">
-  <img src="docs/screenshots/pantalla-inicial.png" alt="Pantalla dividida de SeñaVoz" width="260">
-  <img src="docs/screenshots/conversacion.png" alt="Mensaje reconocido: Hola" width="260">
+  <img src="docs/screenshots/pantalla-inicial.jpg" alt="Pantalla dividida de SeñaVoz" width="260">
+  <img src="docs/screenshots/conversacion.jpg" alt="Mensaje reconocido: Hola" width="260">
 </p>
 
 ## Arquitectura
