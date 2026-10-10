@@ -7,6 +7,13 @@ Aplicación Android de accesibilidad que facilita la conversación cara a cara e
   - **Escribiendo** un mensaje que la app **lee en voz alta** (texto a voz).
   - Tocando **tarjetas de frases rápidas** ("Necesito ayuda", "Necesito un médico", "¿Dónde está el baño?"…).
 
+## Capturas
+
+<p align="center">
+  <img src="docs/screenshots/pantalla-inicial.png" alt="Pantalla dividida de SeñaVoz" width="260">
+  <img src="docs/screenshots/conversacion.png" alt="Mensaje reconocido: Hola" width="260">
+</p>
+
 ## Arquitectura
 
 ```
