@@ -3,7 +3,7 @@ import { Capacitor, PluginListenerHandle, registerPlugin } from '@capacitor/core
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { TextToSpeech } from '@capacitor-community/text-to-speech';
 import { Observable } from 'rxjs';
-import { LANG } from './config';
+import { LANG, STT_LANG } from './config';
 
 /** Plugin propio (android/.../VoiceSetupPlugin.java): abre los ajustes para descargar paquetes de voz. */
 interface VoiceSetupPlugin {
@@ -86,13 +86,15 @@ export class VoiceService {
       }),
     );
 
-    // Sin internet se pide expresamente el reconocimiento en el dispositivo (paquete descargado).
+    // Se pide siempre el reconocimiento en el dispositivo: con el paquete descargado funciona sin
+    // internet (navigator.onLine no sirve: puede decir "en línea" sin conexión real). Si el paquete
+    // no está instalado, Google usa internet.
     const options = {
-      language: LANG,
+      language: STT_LANG,
       partialResults: true,
       popup: false,
       maxResults: 1,
-      preferOffline: !navigator.onLine,
+      preferOffline: true,
     };
     await SpeechRecognition.start(options as any).catch((e) => isActive() && subscriber.error(e));
     return () => {
@@ -110,7 +112,7 @@ export class VoiceService {
     if (!Ctor) throw new Error('Este navegador no soporta reconocimiento de voz.');
 
     const rec = new Ctor();
-    rec.lang = LANG;
+    rec.lang = STT_LANG;
     rec.continuous = false;
     rec.interimResults = true;
     rec.onresult = (e: any) => {

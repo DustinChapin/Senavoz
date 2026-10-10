@@ -4,5 +4,11 @@
  */
 export const API_URL = 'https://senavoz-livid.vercel.app';
 
-/** Idioma de reconocimiento y síntesis de voz. */
+/** Idioma de la voz que lee los mensajes. */
 export const LANG = 'es-ES';
+
+/**
+ * Idioma del reconocimiento de voz. Es 'es-US' porque es el paquete de español sin conexión
+ * de Google que más teléfonos tienen disponible; con él funciona con y sin internet.
+ */
+export const STT_LANG = 'es-US';

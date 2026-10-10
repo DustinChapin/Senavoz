@@ -120,9 +120,7 @@ export class App implements OnInit, OnDestroy {
     if (raw.includes('no speech') || raw.includes('no match')) return 'No te escuché. Toca el botón e inténtalo de nuevo.';
     if (raw.includes('permission')) return 'Falta el permiso del micrófono. Actívalo en los ajustes del teléfono.';
     if (raw.includes('network') || raw.includes('server') || raw.includes('language')) {
-      return navigator.onLine
-        ? 'No se pudo reconocer la voz. Revisa tu conexión e inténtalo de nuevo.'
-        : 'Sin internet no se pudo reconocer la voz. La persona sorda puede descargar el español sin conexión en «Voz sin conexión».';
+      return 'No se pudo reconocer la voz. Sin internet, la persona sorda debe descargar Español (EE. UU.) en «Voz sin conexión».';
     }
     return 'No se pudo usar el micrófono. Inténtalo de nuevo.';
   }
