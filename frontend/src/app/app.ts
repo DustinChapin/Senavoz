@@ -36,6 +36,8 @@ export class App implements OnInit, OnDestroy {
   protected readonly imageFailed = signal(false);
   protected readonly error = signal('');
   protected readonly speakingId = signal<string | null>(null);
+  protected readonly draft = signal('');
+  protected readonly speakingDraft = signal(false);
 
   ngOnInit(): void {
     forkJoin({ dictionary: this.api.dictionary$(), phrases: this.api.phrases$() }).subscribe(({ dictionary, phrases }) => {
@@ -58,12 +60,29 @@ export class App implements OnInit, OnDestroy {
 
   protected async say(phrase: QuickPhrase): Promise<void> {
     this.speakingId.set(phrase.id);
+    await this.speak(phrase.spoken_text);
+    this.speakingId.set(null);
+  }
+
+  /** Lee en voz alta lo que la persona sorda escribió. */
+  protected async speakDraft(): Promise<void> {
+    const text = this.draft().trim();
+    if (!text || this.speakingDraft()) return;
+    this.speakingDraft.set(true);
+    await this.speak(text);
+    this.speakingDraft.set(false);
+    this.draft.set('');
+  }
+
+  protected onDraft(event: Event): void {
+    this.draft.set((event.target as HTMLInputElement).value);
+  }
+
+  private async speak(text: string): Promise<void> {
     try {
-      await this.voice.speak(phrase.spoken_text);
+      await this.voice.speak(text);
     } catch {
       this.error.set('No se pudo reproducir la voz en este dispositivo.');
-    } finally {
-      this.speakingId.set(null);
     }
   }
 

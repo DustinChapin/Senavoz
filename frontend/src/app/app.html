@@ -30,6 +30,15 @@
       }
     </div>
 
+    <form class="compose" (submit)="$event.preventDefault(); speakDraft()">
+      <input type="text" class="compose-input" placeholder="Escribe aquí para que la app lo diga en voz alta"
+        enterkeyhint="send" autocomplete="off" aria-label="Mensaje para leer en voz alta"
+        [value]="draft()" (input)="onDraft($event)" />
+      <button type="submit" class="compose-btn" [disabled]="!draft().trim() || speakingDraft()">
+        {{ speakingDraft() ? '…' : '🔊 Decir' }}
+      </button>
+    </form>
+
     <div class="cards">
       @for (p of phrases(); track p.id) {
         <button type="button" class="card" [class.speaking]="speakingId() === p.id" (click)="say(p)">

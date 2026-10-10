@@ -135,6 +135,51 @@ $muted: #8fa3bf;
   }
 }
 
+.compose {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.compose-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #28405f;
+  border-radius: 12px;
+  background: #0b1220;
+  color: $text;
+  font-size: 1rem;
+  user-select: text;
+
+  &::placeholder {
+    color: $muted;
+  }
+
+  &:focus {
+    outline: 2px solid $accent;
+    outline-offset: 0;
+  }
+}
+
+.compose-btn {
+  flex: 0 0 auto;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: $accent;
+  color: #04202e;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
 .cards {
   flex: 0 0 auto;
   width: 100%;
