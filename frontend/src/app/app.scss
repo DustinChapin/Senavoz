@@ -130,6 +130,42 @@ $muted: #8fa3bf;
   text-align: center;
 }
 
+.link {
+  padding: 4px 8px;
+  border: 0;
+  background: none;
+  color: $muted;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.setup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #0b1424;
+  font-size: 0.85rem;
+  color: $muted;
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    padding: 8px 14px;
+    border: 1px solid #28405f;
+    border-radius: 10px;
+    background: #16263f;
+    color: $text;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+}
+
 .deaf {
   gap: 10px;
   background: $panel-deaf;

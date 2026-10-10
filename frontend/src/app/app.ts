@@ -71,6 +71,21 @@ export class App implements OnInit, OnDestroy {
     this.draft.set((event.target as HTMLInputElement).value);
   }
 
+  protected readonly canSetupVoice = this.voice.canSetupVoice;
+  protected readonly showSetup = signal(false);
+
+  protected toggleSetup(): void {
+    this.showSetup.update((v) => !v);
+  }
+
+  protected setupOfflineSpeech(): void {
+    this.voice.openOfflineSpeechSetup().catch((e) => this.error.set(this.micError(e)));
+  }
+
+  protected setupTts(): void {
+    this.voice.openTtsSetup().catch((e) => this.error.set(this.micError(e)));
+  }
+
   private async speak(text: string): Promise<void> {
     try {
       await this.voice.speak(text);

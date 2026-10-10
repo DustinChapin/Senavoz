@@ -20,6 +20,18 @@
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }
+    @if (canSetupVoice) {
+      <button type="button" class="link" (click)="toggleSetup()" [attr.aria-expanded]="showSetup()">
+        ⚙ Voz sin conexión
+      </button>
+      @if (showSetup()) {
+        <div class="setup">
+          <p>Para usar la app sin internet, descarga el español:</p>
+          <button type="button" (click)="setupOfflineSpeech()">1. Reconocer mi voz</button>
+          <button type="button" (click)="setupTts()">2. Leer mensajes en voz alta</button>
+        </div>
+      }
+    }
   </section>
 
   <!-- Mitad inferior: persona sorda -->

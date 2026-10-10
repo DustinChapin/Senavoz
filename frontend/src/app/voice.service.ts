@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Capacitor, PluginListenerHandle } from '@capacitor/core';
+import { Capacitor, PluginListenerHandle, registerPlugin } from '@capacitor/core';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { TextToSpeech } from '@capacitor-community/text-to-speech';
 import { Observable } from 'rxjs';
 import { LANG } from './config';
+
+/** Plugin propio (android/.../VoiceSetupPlugin.java): abre los ajustes para descargar paquetes de voz. */
+interface VoiceSetupPlugin {
+  openOfflineSpeech(): Promise<{ exact: boolean }>;
+  openTtsInstall(): Promise<{ exact: boolean }>;
+}
+const VoiceSetup = registerPlugin<VoiceSetupPlugin>('VoiceSetup');
 
 /** Puente con el hardware: micrófono (STT) y altavoz (TTS). */
 @Injectable({ providedIn: 'root' })
@@ -27,6 +34,17 @@ export class VoiceService {
         cleanup();
       };
     });
+  }
+
+  /** Solo en Android: abre los ajustes para descargar el español sin conexión. */
+  readonly canSetupVoice = this.native;
+
+  openOfflineSpeechSetup(): Promise<{ exact: boolean }> {
+    return VoiceSetup.openOfflineSpeech();
+  }
+
+  openTtsSetup(): Promise<{ exact: boolean }> {
+    return VoiceSetup.openTtsInstall();
   }
 
   async speak(text: string): Promise<void> {
