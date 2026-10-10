@@ -68,19 +68,58 @@ $muted: #8fa3bf;
   font-size: 1.5rem;
 }
 
-.heard {
-  margin: 0;
-  max-width: 100%;
-  font-size: 1.25rem;
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 2rem;
+  font-size: 1.15rem;
   text-align: center;
-  overflow-wrap: anywhere;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: $muted;
 
-  &.empty {
-    color: $muted;
+  &.live {
+    color: #fca5a5;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  &.done {
+    color: #86efac;
+  }
+}
+
+.bars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+
+  i {
+    width: 5px;
+    height: 100%;
+    border-radius: 3px;
+    background: currentColor;
+    animation: wave 0.9s ease-in-out infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    &:nth-child(4) {
+      animation-delay: 0.45s;
+    }
+  }
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
   }
 }
 
@@ -211,7 +250,8 @@ $muted: #8fa3bf;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mic.on {
+  .mic.on,
+  .bars i {
     animation: none;
   }
 }

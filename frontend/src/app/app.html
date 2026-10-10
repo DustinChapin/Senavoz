@@ -5,11 +5,18 @@
     <button type="button" class="mic" [class.on]="listening()" (click)="toggleListening()"
       [attr.aria-pressed]="listening()">
       <span class="mic-icon">{{ listening() ? '⏹' : '🎤' }}</span>
-      <span>{{ listening() ? 'Detener' : 'Toca y habla' }}</span>
+      <span>{{ listening() ? 'Cancelar' : 'Toca para hablar' }}</span>
     </button>
-    <p class="heard" [class.empty]="!transcript()">
-      {{ transcript() || (listening() ? 'Escuchando…' : 'Tu voz aparecerá aquí') }}
-    </p>
+    <div class="status" [class.live]="listening()" [class.done]="finished() && !listening()" aria-live="polite">
+      @if (listening()) {
+        <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Habla ahora</span>
+      } @else if (finished()) {
+        <span>✔ Listo, tu mensaje se envió</span>
+      } @else {
+        <span>Toca el botón y luego habla</span>
+      }
+    </div>
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }

@@ -11,8 +11,8 @@ export class VoiceService {
   private readonly native = Capacitor.isNativePlatform();
 
   /**
-   * Escucha de forma continua y emite el texto reconocido (parcial y final).
-   * Al desuscribirse se detiene el micrófono.
+   * Escucha UNA frase: emite el texto reconocido (parcial y final) y completa solo
+   * cuando la persona deja de hablar, apagando el micrófono. Al desuscribirse también se detiene.
    */
   startListening(): Observable<string> {
     return new Observable<string>((subscriber) => {
@@ -36,7 +36,7 @@ export class VoiceService {
 
   // ---- Android / iOS (plugin de Capacitor) ----
   private async listenNative(
-    subscriber: { next(v: string): void; error(e: unknown): void },
+    subscriber: { next(v: string): void; error(e: unknown): void; complete(): void },
     isActive: () => boolean,
   ): Promise<() => void> {
     const { available } = await SpeechRecognition.available();
@@ -46,10 +46,6 @@ export class VoiceService {
     if (perm.speechRecognition !== 'granted') throw new Error('Permiso de micrófono denegado.');
 
     const handles: PluginListenerHandle[] = [];
-    const begin = () =>
-      SpeechRecognition.start({ language: LANG, partialResults: true, popup: false, maxResults: 1 }).catch((e) => {
-        if (isActive()) subscriber.error(e);
-      });
 
     handles.push(
       await SpeechRecognition.addListener('partialResults', (data) => {
@@ -57,14 +53,17 @@ export class VoiceService {
         if (text) subscriber.next(text);
       }),
     );
-    // Android corta la escucha tras un silencio: se reinicia para simular escucha continua.
+    // Android detiene la escucha solo tras un silencio: se da por terminada la frase.
+    // La pequeña espera deja llegar el resultado final antes de cerrar.
     handles.push(
       await SpeechRecognition.addListener('listeningState', (state) => {
-        if (state.status === 'stopped' && isActive()) setTimeout(() => isActive() && begin(), 250);
+        if (state.status === 'stopped') setTimeout(() => isActive() && subscriber.complete(), 400);
       }),
     );
 
-    await begin();
+    await SpeechRecognition.start({ language: LANG, partialResults: true, popup: false, maxResults: 1 }).catch(
+      (e) => isActive() && subscriber.error(e),
+    );
     return () => {
       handles.forEach((h) => h.remove());
       SpeechRecognition.stop().catch(() => {});
@@ -73,7 +72,7 @@ export class VoiceService {
 
   // ---- Navegador (Web Speech API), útil para probar en el PC ----
   private async listenWeb(
-    subscriber: { next(v: string): void; error(e: unknown): void },
+    subscriber: { next(v: string): void; error(e: unknown): void; complete(): void },
     isActive: () => boolean,
   ): Promise<() => void> {
     const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -81,7 +80,7 @@ export class VoiceService {
 
     const rec = new Ctor();
     rec.lang = LANG;
-    rec.continuous = true;
+    rec.continuous = false;
     rec.interimResults = true;
     rec.onresult = (e: any) => {
       const last = e.results[e.results.length - 1];
@@ -90,7 +89,7 @@ export class VoiceService {
     rec.onerror = (e: any) => {
       if (e.error !== 'no-speech' && e.error !== 'aborted') subscriber.error(new Error(e.error));
     };
-    rec.onend = () => isActive() && rec.start();
+    rec.onend = () => isActive() && subscriber.complete();
     rec.start();
     return () => rec.stop();
   }

@@ -29,6 +29,7 @@ export class App implements OnInit, OnDestroy {
   protected readonly phrases = signal<QuickPhrase[]>([]);
   protected readonly listening = signal(false);
   protected readonly transcript = signal('');
+  protected readonly finished = signal(false);
   protected readonly error = signal('');
   protected readonly speakingId = signal<string | null>(null);
   protected readonly draft = signal('');
@@ -81,14 +82,27 @@ export class App implements OnInit, OnDestroy {
   private start(): void {
     this.error.set('');
     this.transcript.set('');
+    this.finished.set(false);
     this.listening$ = this.voice.startListening().subscribe({
       next: (text) => this.transcript.set(text),
+      // La persona dejó de hablar: el micrófono ya se apagó solo.
+      complete: () => {
+        this.finished.set(!!this.transcript());
+        this.stop();
+      },
       error: (e) => {
-        this.error.set(e instanceof Error ? e.message : 'No se pudo usar el micrófono.');
+        this.error.set(this.micError(e));
         this.stop();
       },
     });
     this.listening.set(true);
+  }
+
+  private micError(e: unknown): string {
+    const base = e instanceof Error && e.message ? e.message : 'No se pudo usar el micrófono.';
+    return navigator.onLine
+      ? base
+      : `${base} Sin internet, instala el español sin conexión: Ajustes › Google › Voz › Reconocimiento de voz sin conexión.`;
   }
 
   private stop(): void {
