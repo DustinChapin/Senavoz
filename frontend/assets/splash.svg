@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#12376b"/></linearGradient></defs><rect width="2732" height="2732" fill="#0b1220"/>
+    <g transform="translate(1366 1180) scale(.9) translate(-512 -557)">
+  <g id="a">
+    <rect x="150" y="520" width="480" height="280" rx="90" fill="#ffffff"/><path d="M235 770L205 890L360 790Z" fill="#ffffff"/>
+    <circle cx="300" cy="660" r="30" fill="#0b1220"/>
+    <circle cx="390" cy="660" r="30" fill="#0b1220"/>
+    <circle cx="480" cy="660" r="30" fill="#0b1220"/>
+  </g>
+  <g transform="rotate(180 512 512)">
+    <rect x="150" y="520" width="480" height="280" rx="90" fill="#38bdf8"/><path d="M235 770L205 890L360 790Z" fill="#38bdf8"/>
+    <g stroke="#0b1220" stroke-width="36" stroke-linecap="round">
+      <line x1="300" y1="640" x2="300" y2="680"/>
+      <line x1="360" y1="610" x2="360" y2="710"/>
+      <line x1="420" y1="630" x2="420" y2="690"/>
+      <line x1="480" y1="650" x2="480" y2="670"/>
+    </g>
+  </g></g>
+    <text x="1366" y="1900" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="210" font-weight="700" fill="#ffffff">SeñaVoz</text>
+    <text x="1366" y="2060" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="84" fill="#8fa3bf">Conversar sin barreras</text></svg>
