@@ -35,9 +35,15 @@ Frontend (Angular 21 + Capacitor 8)  ⇄  API REST (Node.js + Express)  ⇄  Pos
 
 `ApiService` usa la estrategia **red → caché local → frases integradas**, así la app siempre tiene tarjetas. La voz a texto y el texto a voz usan los servicios del teléfono.
 
-## Instalar el APK
+## Instalar la app
 
-Descarga `entrega/SenaVoz.apk`, cópialo al teléfono y ábrelo (habilita “instalar apps desconocidas”). Al primer uso, concede el permiso de micrófono. Requiere el servicio de voz de Google (reconocimiento en español).
+[**⬇ Descargar el APK**](https://github.com/DustinChapin/Senavoz/releases/latest) (Android 7 o superior)
+
+1. Abre el enlace desde el teléfono y descarga `SenaVoz.apk`.
+2. Ábrelo y permite **instalar apps desconocidas** si Android lo pide.
+3. Al primer uso concede el permiso de micrófono.
+
+Requiere el servicio de voz de Google. Para usarla **sin internet**, toca **⚙ Voz sin conexión** dentro de la app y descarga el español (EE. UU.).
 
 ## Desarrollo
 
@@ -74,6 +80,10 @@ npx cap sync android
 cd android
 ./gradlew assembleDebug   # APK en app/build/outputs/apk/debug/
 ```
+
+## Licencia
+
+[MIT](LICENSE) © 2026 Dustin Chapin
 
 ## Hoja de ruta
 

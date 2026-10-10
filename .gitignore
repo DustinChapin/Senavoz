@@ -14,3 +14,6 @@ frontend/android/app/build/
 frontend/android/local.properties
 frontend/android/app/src/main/assets/public/
 frontend/android/capacitor-cordova-android-plugins/
+
+# El APK se publica como Release de GitHub (copia local en entrega/)
+entrega/
